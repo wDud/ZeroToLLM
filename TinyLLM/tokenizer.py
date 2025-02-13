@@ -9,13 +9,17 @@ or
 method2:
     sentencepiece模块，训练bpe的tokenizer
 """
-import copy
+
 
 import jieba
 from collections import defaultdict
 
 
 class PyBPE():
+    """
+    简单python实现bpe算法
+    BPE只是一种分词算法，需要进一步映射词表，处理oov，才可以用于大模型训练
+    """
     def __init__(self, vocab_size=10000):
         self.vocab_size = vocab_size
         self.vocab = defaultdict(int)
@@ -23,6 +27,8 @@ class PyBPE():
 
     def __process(self, text):
         words = text.split()
+        if len(words) == len(text):
+            words = jieba.lcut(text)
         vocab = []
         for word in words:
             word = f"<{word}>"
@@ -133,14 +139,10 @@ class PyBPE():
         return text
 
 
-if __name__ == '__main__':
-    # BPE只是一种分词算法，需要进一步映射词表，处理oov，才可以用于大模型训练
-    # corpus = "hello world, how are you? nice to meet you, good morning, do you have a work?"
-    corpus = "apple apply ape banana"
-    vocab_max_size = 50
-    bpe = PyBPE()
-    merges = bpe.train(corpus)
-    text = "app aple anban abp ly ana apple banan"
-    tokens = bpe.encode(text)
-    print(tokens)
-    print(bpe.decode(tokens))
+
+class SentencePieceBPE():
+    """
+    使用sentencepiece模块快速实现bpe分词
+    """
+    def __init__(self):
+        pass
